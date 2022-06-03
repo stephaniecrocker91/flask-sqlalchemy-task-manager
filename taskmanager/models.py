@@ -1,14 +1,17 @@
 from taskmanager import db
 
+
+# Create two tables represented by Class based models using SQLAlchemy's ORM
 class Category(db.Model):
     # schema for Category Model
     id = db.Column(db.Integer, primary_key=True)
     category_name = db.Column(db.String(25), unique=True, nullable=False)
+    # to properly link our foreign key and cascade deletion
     tasks = db.relationship("Task", backref="category", cascade="all, delete", lazy=True)
 
 
     def __repr__(self):
-    # __repr__ to represent itself in the form of a string
+    # __repr__ to represent itself(the class objects) in the form of a string
         return self.category_name
 
 

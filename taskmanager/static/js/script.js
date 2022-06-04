@@ -5,14 +5,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // datepicker initialization
-    var elems = document.querySelectorAll('.datepicker');
-    var instances = M.Datepicker.init(datepicker, {
-        format: "dd mmm, yyyy",
+    let datepicker = document.querySelectorAll(".datepicker");
+    M.Datepicker.init(datepicker, {
+        format: "dd mmmm, yyyy",
         i18n: {
             done: "Select"
         }
     });
     // select initialization
-    var elems = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(elems, options);
+    let selects = document.querySelectorAll("select");
+    M.FormSelect.init(selects);
+
+    // collapsable initialization
+    var collapsibles = document.querySelectorAll('.collapsible');
+    M.Collapsible.init(collapsibles);
 });

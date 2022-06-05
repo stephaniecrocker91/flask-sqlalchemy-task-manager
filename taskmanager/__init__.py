@@ -1,4 +1,5 @@
 import os
+import re
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 if os.path.exists("env.py"):
@@ -12,7 +13,10 @@ app.config["SECRET_KEY"]
 if os.environ.get("DEVELOPMENT") == True:
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URL")
 else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URL")
+    uri = os.environ.get("DATABASE_URL")
+    if uri.startswith("postgres://"):
+        uri = uri.replace("postgress://", "postgresql://",1), new)
+    app.config["SQLALCHEMY_DATABASE_URI"] = uri #heroku
 
 db = SQLAlchemy(app)
 

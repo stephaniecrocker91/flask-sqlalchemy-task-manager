@@ -11,25 +11,19 @@ def home():
 
 @app.route("/categories")
 def categories():
-    # query database and retrieve all queries from this table and sort by category_name
     categories = list(Category.query.order_by(Category.category_name).all())
-    # pass this variable to our rendered_template to display to users
     return render_template("categories.html", categories=categories)
 
 
 @app.route("/add_category", methods=["GET", "POST"])
 def add_category():
     if request.method == "POST":
-        # create new variable called category which will be set to a new instance 
-        # of Category() model imported above. We have grabbed new form data.
-        # We need to add request to import above
         category = Category(category_name=request.form.get("category_name"))
-        # Add and commit this to db database
         db.session.add(category)
         db.session.commit()
-        # we then redirect to our 'categories' page
         return redirect(url_for("categories"))
     return render_template("add_category.html")
+
 
 @app.route("/edit_category/<int:category_id>", methods=["GET", "POST"])
 def edit_category(category_id):
@@ -47,11 +41,12 @@ def delete_category(category_id):
     db.session.delete(category)
     db.session.commit()
     return redirect(url_for("categories"))
-    
+
+
 @app.route("/add_task", methods=["GET", "POST"])
 def add_task():
     categories = list(Category.query.order_by(Category.category_name).all())
-    if request.method == "POST":   
+    if request.method == "POST":
         task = Task(
             task_name=request.form.get("task_name"),
             task_description=request.form.get("task_description"),
@@ -63,3 +58,25 @@ def add_task():
         db.session.commit()
         return redirect(url_for("home"))
     return render_template("add_task.html", categories=categories)
+
+
+@app.route("/edit_task/<int:task_id>", methods=["GET", "POST"])
+def edit_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    categories = list(Category.query.order_by(Category.category_name).all())
+    if request.method == "POST":
+        task.task_name = request.form.get("task_name")
+        task.task_description = request.form.get("task_description")
+        task.is_urgent = bool(True if request.form.get("is_urgent") else False)
+        task.due_date = request.form.get("due_date")
+        task.category_id = request.form.get("category_id")
+        db.session.commit()
+    return render_template("edit_task.html", task=task, categories=categories)
+
+
+@app.route("/delete_task/<int:task_id>")
+def delete_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    db.session.delete(task)
+    db.session.commit()
+    return redirect(url_for("home"))
